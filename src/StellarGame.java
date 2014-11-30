@@ -1,36 +1,31 @@
-/**
- * StellarGame.java
- *
- * A class to contain the actual game we are making
- * 
- * Functionalities include:
- *    - game creation
- *    - game state updates
- *    - graphical representation
- * 
- * Author:       Erik Steringer
- * Last Updated: 2014-Nov-9 by Erik Steringer
- */
-
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.fills.*;
 import org.newdawn.slick.state.*;
 
+/**
+ * Contains the gamestates used to run the StellarFugitive application.
+ *
+ */
 public class StellarGame extends StateBasedGame {
-	/// fields
 	private MenuState mainMenu;
 	private InGameState ingame;
 	
-	/// constructors
 	/**
-	 * Constructor, takes a string for the game's name
-	 * "initializes" gameWorld so init can load all the stuff we need
+	 * Constructor taking a String for the window title.
+	 * 
+	 * @param gamename The String used as for the title of the OS-generated window.
 	 */
 	public StellarGame(String gamename) {
 		super(gamename);
 	}
 	
+	/**
+	 * Adds the game-states that are switched between during the application's 
+	 * runtime. Enters the main menu's state.
+	 *
+	 * @param gc The GameContainer needed for initialization.
+	 */
 	@Override
 	public void initStatesList(GameContainer gc) {
 		this.mainMenu = new MenuState();
