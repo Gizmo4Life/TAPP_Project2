@@ -1,34 +1,24 @@
-/**
- * World.java
- *
- * A class to contain the objects of the game's world. Used to track objects 
- * and ease the transition between game and menus.
- * 
- * Functionalities include:
- *    - graphical representation
- *    - game state containment
- * 
- * Author:       Erik Steringer
- * Last Updated: 2014-Nov-9 by Erik Steringer
- */
- 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.*;
 import org.newdawn.slick.fills.*;
-
 import java.util.*;
 
+/**
+ * Class to encapsulate the environment which all objects interact in. 
+ * 
+ */
 public class World {
-
-	/// Fields
 	private PlayerShip mainShip;
 	private CollisionLayer cl;
 	private DebrisManager debris;
 	private AIManager aiships;
-	
 	private static boolean DEBUG_DISP = false;
 	
-	/// Constructors
+	/**
+	 * Parameter-less constructor, instantiates the managers, collisionlayer, 
+	 * and the player's ship.
+	 * 
+	 */
 	public World() {
 		this.cl       = new CollisionLayer();
 		this.debris   = new DebrisManager(cl);
@@ -37,10 +27,16 @@ public class World {
 		mainShip.getPhys().getCImg().addTo(cl);	
 	}
 	
-	/// Methods
 	/**
-	 * Updates our game's state
-	 * Throws a SlickException
+	 * Updates the World.
+	 * <p>
+	 * The update methods of the managers and the player's ship are called. 
+	 * The collisionlayer notifies its objects if there's a collision. It also 
+	 * checks if the keys to debug or exit the game are pressed.
+	 * 
+	 * @param gc The GameContainer object needed for updating
+	 * @param i The amount of time (milliseconds) passed since the last update 
+	 * @throws SlickException
 	 */
 	public void update(GameContainer gc, int i) throws SlickException {
 		mainShip.update(gc, i);
@@ -56,17 +52,24 @@ public class World {
 			gc.exit();
 		}
 	}
-	
-	public int shipHP() { return mainShip.getHP(); }
-	
+		
 	/**
-	 * Renders our game onto the screen
-	 * Throws a SlickException
+	 * Renders the World.
+	 * <p>
+	 * The render methods of the managers and the player's ship are called. 
+	 * All objects are drawn relative to where the player's ship is. But the 
+	 * basic instructions along with the player's HP are also drawn. If the 
+	 * debugging mode is active, that's also drawn onto the screen.
+	 * 
+	 * @param gc The GameContainer object needed to render
+	 * @param g The Graphics object needed to render
+	 * @throws SlickException
 	 */
 	public void render(GameContainer gc, Graphics g) throws SlickException { 
 		float midx = mainShip.getPhys().getGImg().getMidX();
 		float midy = mainShip.getPhys().getGImg().getMidY();
-		g.translate(-midx + 320f, -midy + 240f);
+		
+		g.translate(-midx + 320f, -midy + 240f); // translate to the ship's position
 		
 		debris.render(gc, g);
 		aiships.render(gc, g);
@@ -85,5 +88,14 @@ public class World {
 			g.drawString("AI Ships:  " + aiships.count(), 10, 440);
 			g.drawString("FPS: " + gc.getFPS(), 570, 460);
 		}
+	}
+	
+	/**
+	 * Returns the HP of the player's ship.
+	 * 
+	 * @return An int representing the health of the ship.
+	 */
+	public int shipHP() { 
+		return mainShip.getHP(); 
 	}
 }
