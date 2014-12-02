@@ -1,11 +1,3 @@
-/**
- * CollisionLayer.java
- *
- * Checks a group of Shapes for intercollisions, and activates corresponding Colliders when a collision is detected.
- *
- * Author: Wesley Gydé
- */
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -13,10 +5,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import org.newdawn.slick.geom.Shape;
 
+/**
+ * Class to contain Shapes that we wish to examine for collisions.
+ *
+ */
 public class CollisionLayer{
 	
+	/**
+	 * Class to precisely check for collisions.
+	 *
+	 */
 	private class ShapeCollider{
-		
 		private Container<Shape> s;
 		private Collider c;
 
@@ -39,7 +38,6 @@ public class CollisionLayer{
 		 * @param scb The ShapeColliderBound to perform precision collision-detection with
 		 */
 		public void collide( ShapeCollider sc ){
-
 			//are the Shapes belonging to this and scb colliding?
 			if (   getShape().intersects( sc.getShape() )
 				|| getShape().contains( sc.getShape() )
@@ -49,21 +47,44 @@ public class CollisionLayer{
 				//inform the colliders of a collision
 				c.collide( sc.getCollider() );
 				sc.getCollider().collide( c );
-
 			}
-
 		}
-
-		public boolean sameContainer(Container<Shape> s){return this.s == s;}
-		public Shape getShape(){ return s.val; }
-		public Collider getCollider(){ return c; }
+		
+		/**
+		 * Method to check if two containers are containing the same thing
+		 *
+		 * @param A Shape variant of a Container to check with
+		 * @return A boolean, true if the two objects are equal and false otherwise
+		 */
+		public boolean sameContainer(Container<Shape> s) {
+			return this.s == s;
+		}
+		
+		/**
+		 * Method that returns the contained Shape of the Shape Collider
+		 *
+		 * @return The requested Shape object
+		 */
+		public Shape getShape() {
+			return s.val; 
+		}
+		
+		/**
+		 * Method to return the contained Collider object
+		 *
+		 * @return The requested Collider object
+		 */
+		public Collider getCollider() { 
+			return c; 
+		}
 
 	}
 
-	//One bound (upper/lower x/y) of a Shape's bounding box
-	private class ShapeColliderBound implements Comparable<ShapeColliderBound>{
-		
-		//which_bound values
+	/**
+	 * Class to imprecisely but cheaply check for a collision (helps reduce expensive checks)
+	 *
+	 */
+	private class ShapeColliderBound implements Comparable<ShapeColliderBound> {
 		public static final int LOWER_X = 0;
 		public static final int LOWER_Y = 1;
 		public static final int UPPER_X = 2;
@@ -79,7 +100,7 @@ public class CollisionLayer{
 		 * @param c           a collider to activate if a collision is detected
 		 * @param which_bound which type of bound is this? (upper/lower, x/y)
 		 */
-		public ShapeColliderBound(ShapeCollider sc, int which_bound){
+		public ShapeColliderBound(ShapeCollider sc, int which_bound) {
 			assert
 				   (which_bound == LOWER_X)
 				|| (which_bound == LOWER_Y)
@@ -91,9 +112,13 @@ public class CollisionLayer{
 		}
 
 		
-		/** Returns the bound stored by this (the bound of shape corresponding to which_bound) */
-		public float getBound(){
-			switch (which_bound){
+		/** 
+		 * Returns the bound stored by this (the bound of shape corresponding to which_bound) 
+		 *
+		 * @return The bounds of this collider according to the value of which_bound
+		 */
+		public float getBound() {
+			switch (which_bound) {
 				case LOWER_X:
 					return sc.getShape().getMinX();
 				case LOWER_Y:
@@ -103,15 +128,34 @@ public class CollisionLayer{
 				case UPPER_Y:
 					return sc.getShape().getMaxY();
 			}
-
 			//FIXME: invlaid which_bound value
-
 			return -1;
 		}
-	
-		public int getWhichBound(){ return which_bound; }
-		public ShapeCollider getShapeCollider(){ return sc; }
+		
+		/**
+		 * Method to return the value of which_bound
+		 *
+		 * @return The value of which_bound
+		 */
+		public int getWhichBound() { 
+			return which_bound; 
+		}
+		
+		/**
+		 * Method to get this ShapeCollider objcet
+		 *
+		 * @return The requested ShapeCollider object
+		 */
+		public ShapeCollider getShapeCollider() { 
+			return sc; 
+		}
 
+		/**
+		 * Method to compare between colliders
+		 *
+		 * @param scb The ShapeColliderBound to compare with
+		 * @return An int that can be used for comparisons
+		 */
 		@Override
 		public int compareTo(ShapeColliderBound scb){
 			float f = getBound() - scb.getBound();
@@ -134,18 +178,13 @@ public class CollisionLayer{
 	//------------------
 
 	/**
-	 * Creates and returns a HitLayer
+	 * Constructor, takes no args
+	 *
 	 */
 	public CollisionLayer(){
-
 		bounds_x = new LinkedList<ShapeColliderBound>();
 		bounds_y = new LinkedList<ShapeColliderBound>();
-
 	}
-
-	//------------------------------
-	//--| Collision Notification |--
-	//------------------------------
 
 	/**
 	 * Adds s to this CollisionLayer, and activates c when s collides with other Shapes in this CollisionLayer.
@@ -157,13 +196,11 @@ public class CollisionLayer{
 	 */
 	public void add(Container<Shape> s, Collider c){
 		//FIXME: exception for adding duplicate Shape
-
 		ShapeCollider sc = new ShapeCollider(s, c);
 		bounds_x.add(new ShapeColliderBound( sc, ShapeColliderBound.LOWER_X ));
 		bounds_y.add(new ShapeColliderBound( sc, ShapeColliderBound.LOWER_Y ));
 		bounds_x.add(new ShapeColliderBound( sc, ShapeColliderBound.UPPER_X ));
 		bounds_y.add(new ShapeColliderBound( sc, ShapeColliderBound.UPPER_Y ));
-
 	}
 
 	/**
@@ -173,9 +210,8 @@ public class CollisionLayer{
 	 *
 	 * @param s the Shape to remove
 	 */
-	public void remove(Container<Shape> s){
+	public void remove(Container<Shape> s) {
 		//FIXME: exception for removing nonexistant Shape
-
 		Iterator<ShapeColliderBound> itx = bounds_x.iterator();
 		Iterator<ShapeColliderBound> ity = bounds_y.iterator();
 		while (itx.hasNext() && ity.hasNext()){
@@ -184,10 +220,8 @@ public class CollisionLayer{
 			if ( scbx.getShapeCollider().sameContainer(s) ){ itx.remove(); }
 			if ( scby.getShapeCollider().sameContainer(s) ){ ity.remove(); }
 		}
-
 		//same number of bounds in each list
-		assert (!itx.hasNext()) && (!ity.hasNext());		
-
+		assert (!itx.hasNext()) && (!ity.hasNext());
 	}
 
 	/**
@@ -196,7 +230,7 @@ public class CollisionLayer{
 	 * be detected as separate collisions.
 	 */
 	@SuppressWarnings("unchecked")
-	public void notifyCollisions(){
+	public void notifyCollisions() {
 		Collections.sort(bounds_x);
 		Collections.sort(bounds_y);
 
@@ -219,13 +253,11 @@ public class CollisionLayer{
 		assert active_sc.isEmpty(); 
 
 		for ( ShapeColliderBound yscb : bounds_y ){
-
 			ShapeCollider ysc = yscb.getShapeCollider();
 			if ( active_sc.contains(ysc) ){
 				active_sc.remove( ysc );
 			} else {
 				for( ShapeCollider asc : active_sc ){
-
 					if (   collisions_x.get(asc).contains(ysc)
 						|| collisions_x.get(ysc).contains(asc)
 						){
@@ -234,13 +266,10 @@ public class CollisionLayer{
 				}
 				active_sc.add( ysc );
 			}
-
 		}
-
+		
 		//every ShapeCollider should have an even number of bounds (specifically, 2 y bounds)
 		assert active_sc.isEmpty();
-		
-
 	}
 
 	//--------------------------

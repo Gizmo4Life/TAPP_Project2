@@ -1,11 +1,3 @@
-/**
- * CollisionImage.java
- *
- * Handles collision-detection for a StellarObject
- *
- * Author: Wesley Gydé
- */
-
 import java.util.HashSet;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.fills.GradientFill;
@@ -16,8 +8,11 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.ShapeFill;
 import org.newdawn.slick.SlickException;
 
-public class CollisionImage{
-	
+/**
+ * Class to represent the collidable portion of a StellarObject
+ *
+ */
+public class CollisionImage{	
 	private static final ShapeFill DEFAULT_FILL = new GradientFill(
 		   0.0f,   0.0f, Color.cyan,
 		   1.0f,   1.0f, Color.cyan
@@ -28,10 +23,6 @@ public class CollisionImage{
 	private Collider col;
 	private HashSet<CollisionLayer> layers;
 	
-	//------------------
-	//--| 'structors |--
-	//------------------
-
 	/**
 	 * Constructor
 	 *
@@ -46,16 +37,15 @@ public class CollisionImage{
 		fill = DEFAULT_FILL;
 	}
 
-	/** Prepares this for destruction; unsubscribes from all push-event systems. */
+	/** 
+	 * Prepares this for destruction; unsubscribes from all push-event systems. 
+	 *
+	 */
 	public void destroy(){
 		for (CollisionLayer cl : layers){
 			cl.remove(shape_container);
 		}
 	}
-
-	//---------------------------------
-	//--| CollisionLayer Add/Remove |--
-	//---------------------------------
 
 	/**
 	 * Passes collision information to cl, causing this to be notified when it collides
@@ -83,21 +73,30 @@ public class CollisionImage{
 		layers.remove(cl);
 	}
 
-	//--------------------------
-	//--| Updates / Graphics |--
-	//--------------------------
-
-	/** Updates the location/orientation of this via the input Transform. */
+	/** 
+	 * Updates the location/orientation of this via the input Transform. 
+	 *
+	 * @param t The transform to use when updating the CollisionImage
+	 */
 	public void transform(Transform t){
 		shape_container.val = shape_container.val.transform(t);
 	}
 
-	/** Performs graphical updates; should be propegated from the base Slick2D game object */
+	/** 
+	 * Performs graphical updates; should be propegated from the base Slick2D game object 
+	 *
+	 * @param gc The GameContainer object needed for rendering
+	 * @param g The Graphics object needed for rendering
+	 */
 	public void render(GameContainer gc, Graphics g) throws SlickException{
 		g.draw( shape_container.val, fill ); //For some reason, using a fill is faster than g.setColor().
 	}
 
-	/** Sets the color used to draw this (see render() ). */
+	/** 
+	 * Sets the color used to draw this (see render() ). 
+	 *
+	 * @param c The Color to use when drawing this CollisionImage
+	 */
 	public void setColor(Color c){
 		fill = new GradientFill(
 		   0.0f,   0.0f, c,

@@ -1,16 +1,4 @@
-/**
- * Collider.java
- *
- * Provides a common medium for communication between colliding objects.
- * Subclasses will typically be used as a wrapper for another object, and are expected to
- * provide the following information:
- *     1) During a collision, what should the contained object do to other objects?
- *     2) During a collision, what are other objects allowed to do to the contained object?
- *
- * Author: Wesley Gydé
- */
-
-/**
+/*
  * ## USAGE ##
  *
  * What is this?
@@ -64,7 +52,11 @@
  * Direct any/all questions to the author, Wesley Gydé.
  */
 
-public abstract class Collider{
+ /**
+  * Abstract class used for defining Colliders 
+  *
+  */
+public abstract class Collider {
 
 	/**
 	* Perform a collision on the input Collider
@@ -72,12 +64,12 @@ public abstract class Collider{
 	* @param c The Collider on which to perform a collision
 	*/
 	public void collide(Collider c){}
-
-	//---------------------------
-	//--| Collision Interface |--
-	//---------------------------
-	//methods by which to interact with another Collidable during a collision
-
+	
+	/**
+	 * Method to "damage" the collider that's colliding with this collider
+	 *
+	 * @param dam The amount of damage inflicted
+	 */
 	public void inflictDamage(int dam){}
 
 }
